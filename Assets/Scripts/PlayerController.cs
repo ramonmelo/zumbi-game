@@ -1,59 +1,58 @@
 ﻿using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
-	public float Speed = 5;
-	public LayerMask groundMask;
-	public int PlayerHealth = 100;
+    public float Speed = 5;
+    public LayerMask groundMask;
+    public int PlayerHealth = 100;
 
-	private Animator anim;
-	private Rigidbody rb;
-	private Vector3 dir;
+    private Animator anim;
+    private Rigidbody rb;
+    private Vector3 dir;
 
-	private const string AnimationRunning = "Running";
+    private const string AnimationRunning = "Running";
 
-	void Start()
-	{
-		anim = GetComponent<Animator>();
-		rb = GetComponent<Rigidbody>();
-	}
+    public event Action<int> OnHealthChanged;
 
-	void Update()
-	{
-		dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
-		anim.SetBool(AnimationRunning, dir != Vector3.zero);
-	}
+    void Start()
+    {
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
+    }
 
-	void FixedUpdate()
-	{
-		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+    void Update()
+    {
+        dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical")).normalized;
+        anim.SetBool(AnimationRunning, dir != Vector3.zero);
+    }
 
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundMask))
-		{
-			Vector3 origin = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-			Vector3 direction = origin - transform.position;
+    void FixedUpdate()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-			rb.MoveRotation(Quaternion.LookRotation(direction));
-		}
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundMask))
+        {
+            Vector3 origin = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            Vector3 direction = origin - transform.position;
 
-		if (dir != Vector3.zero)
-		{
-			rb.MovePosition(rb.position + (dir * Speed * Time.fixedDeltaTime));
-		}
-		else
-		{
-			rb.velocity = Vector3.zero;
-		}
-	}
+            rb.MoveRotation(Quaternion.LookRotation(direction));
+        }
 
-	public void TakeDamage(int demage = 30)
-	{
-		this.PlayerHealth -= demage;
+        if (dir != Vector3.zero)
+        {
+            rb.MovePosition(rb.position + (dir * Speed * Time.fixedDeltaTime));
+        }
+        else
+        {
+            rb.velocity = Vector3.zero;
+        }
+    }
 
-		if (this.PlayerHealth <= 0)
-		{
-			GameManager.instance.RaiseGameOver();
-		}
-	}
+    public void TakeDamage(int demage = 30)
+    {
+        this.PlayerHealth -= demage;
+        OnHealthChanged?.Invoke(this.PlayerHealth);
+    }
 }
