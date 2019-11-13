@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
 
 	public event Action OnGameOver;
 
-	void Start()
-	{
+    void Awake()
+    {
 		if (instance != null)
 		{
 			Destroy(instance.gameObject);
