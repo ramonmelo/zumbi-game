@@ -4,60 +4,67 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-	public Transform target;
-	public float Speed;
-	public float StopDistance = 1;
+    public Transform target;
+    public float StopDistance = 1;
+    public AudioClip deathClip;
 
-	private PlayerController player;
+    //private Rigidbody rb;
+    private MovingCharacter motor;
+    private PlayerController player;
 
-	private Rigidbody rb;
-	private Vector3 dir;
-	private Animator animator;
+    private Vector3 dir;
+    private Animator animator;
+    private const string AnimationAtack = "Atack";
+    private const string TargetPlayer = "Player";
 
-	private const string AnimationAtack = "Atack";
-	private const string TargetPlayer = "Player";
+    void Start()
+    {
+        target = GameObject.FindGameObjectWithTag(TargetPlayer).transform;
+        player = target.GetComponent<PlayerController>();
 
-	void Start()
-	{
-		target = GameObject.FindGameObjectWithTag(TargetPlayer).transform;
-		player = GameObject.FindGameObjectWithTag(TargetPlayer).GetComponent<PlayerController>();
+        motor = GetComponent<MovingCharacter>();
 
-		rb = GetComponent<Rigidbody>();
-		animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        animator.SetBool(AnimationAtack, false);
 
-		transform.GetChild(Random.Range(1, 28)).gameObject.SetActive(true);
-	}
+        transform.GetChild(Random.Range(1, 28)).gameObject.SetActive(true);
+    }
 
-	void Update()
-	{
-		dir = target != null ? (target.position - transform.position) : Vector3.positiveInfinity;
-	}
+    void Update()
+    {
+        dir = target != null ? (target.position - transform.position) : Vector3.positiveInfinity;
+    }
 
-	void FixedUpdate()
-	{
-		if (target == null) { return; }
+    void FixedUpdate()
+    {
+        if (target == null || dir == Vector3.zero) { return; }
 
-		rb.MoveRotation(Quaternion.LookRotation(dir));
+        motor.Rotate(dir);
 
-		if (dir.magnitude > StopDistance)
-		{
-			rb.MovePosition(rb.position + (dir.normalized * Speed * Time.fixedDeltaTime));
-			animator.SetBool(AnimationAtack, false);
-		}
-		else
-		{
-			animator.SetBool(AnimationAtack, true);
-		}
-	}
+        if (dir.magnitude > StopDistance)
+        {
+            motor.Move(dir.normalized);
+            animator.SetBool(AnimationAtack, false);
+        }
+        else
+        {
+            animator.SetBool(AnimationAtack, true);
+        }
+    }
 
-	void AtackEvent()
-	{
-		if (dir.magnitude < StopDistance)
-		{
-			Debug.Log("Atack!");
+    private void OnDestroy()
+    {
+        AudioController.instance.PlayOneShot(this.deathClip);
+    }
 
-			int demage = Random.Range(10, 31);
-			player.TakeDamage(demage);
-		}
-	}
+    void AtackEvent()
+    {
+        if (dir.magnitude < StopDistance)
+        {
+            Debug.Log("Atack!");
+
+            int demage = Random.Range(10, 31);
+            player.TakeDamage(demage);
+        }
+    }
 }
