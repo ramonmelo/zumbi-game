@@ -7,6 +7,8 @@ public class GunController : MonoBehaviour
 	public GameObject bulletPrefab;
 	public Transform gunFire;
 	public float FireRate = 0.5f;
+    public AudioClip fireClip;
+
 
 	private bool gameRunning = true;
 	private float nextFire = 0.0f;
@@ -30,8 +32,9 @@ public class GunController : MonoBehaviour
 		if (Input.GetButton("Fire1") && Time.time > nextFire)
 		{
 			nextFire = Time.time + FireRate;
+            AudioController.instance.PlayOneShot(fireClip);
 
-			var bullet = Instantiate(bulletPrefab, gunFire.position, gunFire.rotation);
+			Instantiate(bulletPrefab, gunFire.position, gunFire.rotation);
 		}
 	}
 }
