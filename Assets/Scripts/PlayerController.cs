@@ -3,22 +3,24 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
-    public float Speed = 5;
     public LayerMask groundMask;
     public int PlayerHealth = 100;
 
+    private MovingCharacter motor;
+
     private Animator anim;
-    private Rigidbody rb;
     private Vector3 dir;
 
     private const string AnimationRunning = "Running";
 
     public event Action<int> OnHealthChanged;
 
+    public AudioClip damageClip;
+
     void Start()
     {
         anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
+        motor = GetComponent<MovingCharacter>();
     }
 
     void Update()
@@ -31,28 +33,22 @@ public class PlayerController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundMask))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
         {
             Vector3 origin = new Vector3(hit.point.x, transform.position.y, hit.point.z);
             Vector3 direction = origin - transform.position;
 
-            rb.MoveRotation(Quaternion.LookRotation(direction));
+            motor.Rotate(direction);
         }
 
-        if (dir != Vector3.zero)
-        {
-            rb.MovePosition(rb.position + (dir * Speed * Time.fixedDeltaTime));
-        }
-        else
-        {
-            rb.velocity = Vector3.zero;
-        }
+        motor.Move(dir);
     }
 
     public void TakeDamage(int demage = 30)
     {
         this.PlayerHealth -= demage;
+        AudioController.instance.PlayOneShot(this.damageClip);
+
         OnHealthChanged?.Invoke(this.PlayerHealth);
     }
 }
