@@ -15,7 +15,7 @@ public class BulletController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		rb.MovePosition(rb.position + transform.forward * Speed * Time.deltaTime);
+		rb.MovePosition(rb.position + transform.forward * Speed * Time.fixedDeltaTime);
 	}
 
 	/// <summary>
