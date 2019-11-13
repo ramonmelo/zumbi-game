@@ -2470,6 +2470,7 @@ GameObject:
   - component: {fileID: 8053239395307530530}
   - component: {fileID: 1988549704}
   - component: {fileID: 1490349271148578260}
+  - component: {fileID: 1148705780}
   m_Layer: 8
   m_Name: Personagens
   m_TagString: Player
@@ -2576,10 +2577,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0096fc695ef946f6b142db3850e0dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Speed: 10
   groundMask:
     serializedVersion: 2
     m_Bits: 512
+  PlayerHealth: 100
+  damageClip: {fileID: 8300000, guid: ce3ec4ded32df4584a7ce1a6efb6c871, type: 3}
 --- !u!114 &1490349271148578260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2596,6 +2598,20 @@ MonoBehaviour:
     type: 3}
   gunFire: {fileID: 455884905}
   FireRate: 0.5
+  fireClip: {fileID: 8300000, guid: d566ef25c0d3a48198f873bb5e93a4f0, type: 3}
+--- !u!114 &1148705780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884102019447498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 665fc12bd064d4bbfa7e764afee7c113, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Speed: 10
 --- !u!1 &1938851689004064
 GameObject:
   m_ObjectHideFlags: 0
