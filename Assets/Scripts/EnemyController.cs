@@ -27,6 +27,11 @@ public class EnemyController : MonoBehaviour
         animator = GetComponent<Animator>();
         animator.SetBool(AnimationAtack, false);
 
+        EnemyRandomSkin();
+    }
+
+    private void EnemyRandomSkin()
+    {
         transform.GetChild(Random.Range(1, 28)).gameObject.SetActive(true);
     }
 
@@ -55,7 +60,7 @@ public class EnemyController : MonoBehaviour
     private void OnDestroy()
     {
         AudioController.instance.PlayOneShot(this.deathClip);
-    }
+    } 
 
     void AtackEvent()
     {
