@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     public int PlayerHealth = 100;
 
-    private MovingCharacter motor;
+    private MovingPlayer motor;
 
     private Animator anim;
     private Vector3 dir;
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
-        motor = GetComponent<MovingCharacter>();
+        motor = GetComponent<MovingPlayer>();
     }
 
     void Update()
@@ -31,16 +31,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundMask))
-        {
-            Vector3 origin = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-            Vector3 direction = origin - transform.position;
-
-            motor.Rotate(direction);
-        }
-
+        motor.Rotate(groundMask);
         motor.Move(dir);
     }
 
